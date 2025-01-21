@@ -1,5 +1,20 @@
 # ☀️ Automating Weather Data with Elastic Stack Using JDBC
 
+## 목차
+1. [Team](#1-team)
+2. [Project intro & subject](#2-project-intro--subject)
+3. [Stack and Tools](#3-stack-and-tools)
+4. [Database](#4-database)
+   - [weather_info table](#weather_info-table)
+   - [DDL](#-ddl)
+   - [DML](#-dml)
+5. [Hands On](#5-hands-on)
+   - [5-1. 수집된 지역 별 기상 정보 데이터 합치기](#5-1-수집된-지역-별-기상-정보-데이터-합치기)
+   - [5-2. Logstash에서 JDBC 연동](#5-2-logstash에서-jdbc-연동)
+   - [5-3. logstash 실행](#5-3-logstash-실행)
+   - [5-4. Kibana 시각화](#5-4-kibana-시각화)
+6. [Trouble Shooting](#6-trouble-shooting)
+7. [Review](#7-review)
 
 ## 1. Team
 
@@ -104,7 +119,7 @@ VALUES
 
 <img src = "https://github.com/user-attachments/assets/ea6825a1-9e71-439e-b963-584488d4a6e9" width = "500"/>
 </br>
-<img src = "https://github.com/user-attachments/assets/8c218960-b4ab-4337-9186-2fb27335a147" width = "500"/>
+<img src = "https://github.com/user-attachments/assets/8c218960-b4ab-4337-9186-2fb27335a147" width = "300"/>
 
 
 
@@ -149,10 +164,6 @@ output {
 
 ### 3. 📁 weather_info
 elasticsearch-head에서 정상 업로드 확인
-
-<img src = "https://github.com/user-attachments/assets/1c744053-ff82-49c6-b043-d3b8a49d5acc" width = "500"/>
-</br>
-<img src = "https://github.com/user-attachments/assets/c4f4dce2-ac1a-463d-81f4-a0f495a026df" width = "500"/>
 
 
 ---
