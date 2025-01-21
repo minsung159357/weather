@@ -47,7 +47,7 @@
 
 > ### 📌 id INT PRIMARY KEY AUTO_INCREMENT,     -- 아이디
 
-## `weather_info` table
+### `weather_info` table
 
 | **컬럼명**                | **설명**                                                                                   |
 |-------------------------|--------------------------------------------------------------------------------------------|
@@ -193,7 +193,7 @@ logstash -f ..\config\weather_info.conf
 
 - 정상적으로 SELECT를 하는지, 1분을 주기로 다시 SEELCT 하는지 확인
 
-<img src="result.PNG" width="500"/>
+<img src="./img/result1.png" width="500"/>
 <img src="head1.png" width="500"/>
 <img src="head2.png" width="500"/>
 
@@ -202,7 +202,7 @@ logstash -f ..\config\weather_info.conf
 ### 5-4. 
 
 ## 6. Trouble Shooting
-# 파일명 오류
+### 파일명 오류
 logstash 와 jdbc 를 연동하는 설정파일(mysql-logstash.conf) 수정 중 파일명을 잘못 기재하여 오류발생.
 
 ![image](https://github.com/user-attachments/assets/42263ffd-a0ef-479f-aaa2-bb010e9a4a7f)
@@ -211,7 +211,7 @@ mysql-connector-java-8.0.32.jar --->mysql-connector-j-8.0.33.jar 수정완료.
 
 ![image](https://github.com/user-attachments/assets/81240646-edfb-455f-9b3a-c40e00418f77)
 
-# jdbc 연결 오류
+### jdbc 연결 오류
 
 ![image](https://github.com/user-attachments/assets/40a2c384-6f9b-4392-bef9-f4f5efdfff93)
 
