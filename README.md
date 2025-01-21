@@ -102,9 +102,9 @@ VALUES
 ### 1. 📈 [dataSet]
 기상청 자료개방포털에서 **제주도** 기온 데이터를 가져와 데이터 정제 후 사용
 
-![image](https://github.com/user-attachments/assets/ea6825a1-9e71-439e-b963-584488d4a6e9)
-
-![image](https://github.com/user-attachments/assets/8c218960-b4ab-4337-9186-2fb27335a147)
+<img src = "https://github.com/user-attachments/assets/ea6825a1-9e71-439e-b963-584488d4a6e9" width = "500"/>
+</br>
+<img src = "https://github.com/user-attachments/assets/8c218960-b4ab-4337-9186-2fb27335a147" width = "500"/>
 
 
 
@@ -150,8 +150,9 @@ output {
 ### 3. 📁 weather_info
 elasticsearch-head에서 정상 업로드 확인
 
-![image](https://github.com/user-attachments/assets/1c744053-ff82-49c6-b043-d3b8a49d5acc)
-![image](https://github.com/user-attachments/assets/c4f4dce2-ac1a-463d-81f4-a0f495a026df)
+<img src = "https://github.com/user-attachments/assets/1c744053-ff82-49c6-b043-d3b8a49d5acc" width = "500"/>
+</br>
+<img src = "https://github.com/user-attachments/assets/c4f4dce2-ac1a-463d-81f4-a0f495a026df" width = "500"/>
 
 
 ---
