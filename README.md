@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream
-# ☀️ Weather data using Elastic stack
-=======
-# weather data using Elastic stack, JDBC
->>>>>>> Stashed changes
+# ☀️ Automating Weather Data with Elastic Stack Using JDBC
 
 
 ## 1. Team
