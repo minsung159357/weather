@@ -14,14 +14,24 @@
 
 💡 자기주도적 학습 기간 : `2025.01.19` ~ `2025.01.21`
 
-💡 개요 : 데이터를
+💡 개요 : 본 프로젝트는 Filebeat를 사용하지 않고 `Logstash`와 `JDBC`를 직접 연결해 Pipeline을 구축하여 **MySQL 데이터를 자동 수집하는 프로그램을 구현**하는 데 초점을 맞췄다. 이를 통해 Elastic Stack의 핵심 구성 요소에 대한 이해를 심화하고, 데이터의 자동 수집 및 분석 프로세스를 효과적으로 구축하는 방법론을 학습하고자 한다.
 
-💡 주제 : 
+💡 주제 : 기온 데이터를 바탕으로 제주도의 4개 지역의 날씨 분석
 
-💡 데이터 수집 : 
+💡 데이터 수집 : 기상청의 기온 데이터를 csv로 저장해, mysql에 저장하였다.
 
 
 ## 3. Stack and Tools
+
+| 기술           | 설명                         |
+|----------------|------------------------------|
+| <img src="https://img.shields.io/badge/elasticsearch-005571?style=for-the-badge&logo=elasticsearch&logoColor=white">    | 데이터 검색 및 분석 엔진      |
+| <img src="https://img.shields.io/badge/logstash-005571?style=for-the-badge&logo=logstash&logoColor=white">      | 데이터 수집 및 처리 도구      |
+| <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white">   | 관계형 데이터베이스 관리 시스템 |
+| <img src="https://img.shields.io/badge/jdbc-000000?style=for-the-badge&logo=openjdk&logoColor=white">          | Java 데이터베이스 연결 API     |
+| <img src="https://img.shields.io/badge/kibana-005571?style=for-the-badge&logo=kibana&logoColor=white">        | 데이터 시각화 및 대시보드 도구 |
+
+
 
 ## 4. Database
 
@@ -30,10 +40,12 @@
     📁 파일명
 
     1. [dataSet] weather_info.csv
-    2. [logstash] weather_info.conf
-    3. weather_info
+    2. [logstash] mysql-logstash.conf
+    3. mysql-connector-j-8.0.33.jar
 
 </aside>
+
+
 
 ## 5. Practice course
 ### 5-1. 수집된 지역 별 기상 정보 데이터 합치기
@@ -116,3 +128,17 @@ use_column_value = false 값으로 변경하여 해결.
 ![image](https://github.com/user-attachments/assets/4b0e9883-8b4d-49c9-8fd9-961c1842629c)
 
 ## 7. Review
+
+<details>
+<summary>이슬기</summary>
+
+    [배운 점]
+    프로젝트를 통해 logstash의 conf 파일을 커스터마이징을 하는 방법을 배웠고, JDBC 드라이버와 연결하는 방법을 배웠다. 또한, Pipeline을 구축하며 실행되지 않는 다양한 문제에 직면하면서 logstash가 어떻게 동작하는지 배울 수 있었다.😄
+
+    [아쉬운 점]
+    mysql부터 Elasticsearch는 logstash를 사용해 데이터 전송을 자동화할 수 있었지만, mysql에 데이터를 적재하는 로직을 API 혹은 크롤링을 통해 자동화 프로그램을 만들 수 있었다면 더욱 좋았을 것 같다.
+    
+    [앞으로..]
+    프로세스를 더욱 최적화할 수 있는 부분은 없는지 고민하고, 실습을 진행해보아야겠다.
+
+</details>
