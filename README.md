@@ -1,4 +1,4 @@
-# weather data using Elastic stack
+# ☀️ Weather data using Elastic stack
 
 
 ## 1. Team
@@ -157,7 +157,7 @@ elasticsearch-head에서 정상 업로드 확인
 
 ---
 
-## 5. Practice course
+## 5. Hands On
 ### 5-1. 수집된 지역 별 기상 정보 데이터 합치기
 
 - 메모장에서 데이터를 하나의 파일로 합치고, 파일이 기본 `ANSI` 로 설정되어 있어서 인코딩 `UTF-8`로 바꿔서 저장
