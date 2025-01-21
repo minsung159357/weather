@@ -79,7 +79,10 @@
 
 
 ## 📌 DDL
-```
+
+CSV 데이터 파일 형식에 맞추어 날씨 데이터 DDL문을 작성
+
+```sql
 CREATE TABLE TemperatureData (
     id INT PRIMARY KEY AUTO_INCREMENT,     -- 아이디
     station_id INT NOT NULL,               -- 지점번호
@@ -95,7 +98,10 @@ CREATE TABLE TemperatureData (
 );
 ```
 ## ✏️ DML
-```
+
+프로그램의 자동화를 테스트하기 위해 추가적인 더미데이터를 DML문으로 생성
+
+```sql
 INSERT INTO weather_info (
 	station_id,
 	station_name,
@@ -115,6 +121,7 @@ VALUES
 ---
 
 ### 1. 📈 [dataSet]
+
 기상청 자료개방포털에서 **제주도** 기온 데이터를 가져와 데이터 정제 후 사용
 
 <img src = "https://github.com/user-attachments/assets/ea6825a1-9e71-439e-b963-584488d4a6e9" width = "500"/>
