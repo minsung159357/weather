@@ -7,7 +7,7 @@
 4. [Database](#4-database)
    - [weather_info table](#weather_info-table)
    - [DDL](#-ddl)
-   - [DML](#%EF%B8%8F-dml)
+   - [DML](#-dml)
 5. [Hands On](#5-hands-on)
    - [5-1. 수집된 지역 별 기상 정보 데이터 합치기](#5-1-수집된-지역-별-기상-정보-데이터-합치기)
    - [5-2. Logstash에서 JDBC 연동](#5-2-logstash에서-jdbc-연동)
@@ -38,14 +38,15 @@
 
 ## 3. Stack and Tools
 
+<img src="./img/image-pipeline.png" width = "600"/>
+
 | 기술           | 설명                         |
 |----------------|------------------------------|
-| <img src="https://img.shields.io/badge/elasticsearch-005571?style=for-the-badge&logo=elasticsearch&logoColor=white">    | 데이터 검색 및 분석 엔진      |
-| <img src="https://img.shields.io/badge/logstash-005571?style=for-the-badge&logo=logstash&logoColor=white">      | 데이터 수집 및 처리 도구      |
 | <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white">   | 관계형 데이터베이스 관리 시스템 |
 | <img src="https://img.shields.io/badge/jdbc-000000?style=for-the-badge&logo=openjdk&logoColor=white">          | Java 데이터베이스 연결 API     |
+| <img src="https://img.shields.io/badge/logstash-005571?style=for-the-badge&logo=logstash&logoColor=white">      | 데이터 수집 및 처리 도구      |
+| <img src="https://img.shields.io/badge/elasticsearch-005571?style=for-the-badge&logo=elasticsearch&logoColor=white">    | 데이터 검색 및 분석 엔진      |
 | <img src="https://img.shields.io/badge/kibana-005571?style=for-the-badge&logo=kibana&logoColor=white">        | 데이터 시각화 및 대시보드 도구 |
-
 
 
 ## 4. Database
@@ -56,7 +57,7 @@
 
     1. [dataSet] weather_info.csv
     2. [logstash] mysql-logstash.conf
-    3. mysql-connector-j-8.0.33.jar
+    3. wheather_mysql.sql
 
 </aside>
 
@@ -130,8 +131,6 @@ VALUES
 
 
 
-
-
 출처 : 기상청
 
 [기상자료개방포털](https://data.kma.go.kr/cmmn/main.do)
@@ -172,8 +171,6 @@ output {
 ### 3. 📁 weather_info
 elasticsearch-head에서 정상 업로드 확인
 
-
----
 
 ## 5. Hands On
 ### 5-1. 수집된 지역 별 기상 정보 데이터 합치기
@@ -249,6 +246,7 @@ logstash -f ..\config\weather_info.conf
 | ![image](https://github.com/user-attachments/assets/adcb1e4b-a61d-438f-a3df-30ba475184c3) | ![image](https://github.com/user-attachments/assets/7329cc6c-9134-41e0-a01a-8393c0d7f073) | 
 | 월 평균 기온             | 연 평균 일교차             |
 
+
 |        |           |
 |-------------------|-------------------|
 | ![alt text](./img/max-min.png) | ![alt text](./img/season-temp.png) |
@@ -257,7 +255,7 @@ logstash -f ..\config\weather_info.conf
 
 
 ## 6. Trouble Shooting
-### 파일명 오류
+### 1️⃣ 파일명 오류
 logstash 와 jdbc 를 연동하는 설정파일(mysql-logstash.conf) 수정 중 파일명을 잘못 기재하여 오류발생.
 
 ![image](https://github.com/user-attachments/assets/42263ffd-a0ef-479f-aaa2-bb010e9a4a7f)
@@ -266,7 +264,7 @@ mysql-connector-java-8.0.32.jar --->mysql-connector-j-8.0.33.jar 수정완료.
 
 ![image](https://github.com/user-attachments/assets/81240646-edfb-455f-9b3a-c40e00418f77)
 
-### jdbc 연결 오류
+### 2️⃣ jdbc 연결 오류
 
 ![image](https://github.com/user-attachments/assets/b7d35e4a-637e-433a-a614-7ad2ee5c2df1)
 
@@ -281,15 +279,21 @@ use_column_value = false 값으로 변경하여 해결.
 
 <img src="https://github.com/user-attachments/assets/4b0e9883-8b4d-49c9-8fd9-961c1842629c" width="300">
 
-### AUTO_INCREMENT 오류
+### 3️⃣ AUTO_INCREMENT 오류
 
 PRIMARY KEY 를 먼저 설정하지 않은채로 AUTO_INCREMENT 설정을 하여 오류발생.
 
-![image](https://github.com/user-attachments/assets/f8dd66ce-6098-4293-9ca6-4911d919a46e)
+| 에러 |
+|--------|
+| <img src="https://github.com/user-attachments/assets/f8dd66ce-6098-4293-9ca6-4911d919a46e" width="400"> |
+
+| 해결 과정 |
+|--------|
+| <img src="https://github.com/user-attachments/assets/d063cf08-02f5-41b2-a61d-42f2c2266656" width="400"> |
+
 
 PRIMARY KEY 를 먼저 설정하여 해결.
 
-![image](https://github.com/user-attachments/assets/d063cf08-02f5-41b2-a61d-42f2c2266656)
 
 ## 7. Review
 
