@@ -18,7 +18,7 @@
 
 💡 주제 : 기온 데이터를 바탕으로 제주도의 4개 지역의 날씨 분석
 
-💡 데이터 수집 : 기상청의 기온 데이터를 csv로 저장해, mysql에 저장하였다.
+💡 데이터 수집 : [기상청의 기온 데이터](https://data.kma.go.kr/climate/RankState/selectRankStatisticsDivisionList.do)를 csv로 저장해, mysql에 저장하였다.
 
 
 ## 3. Stack and Tools
@@ -63,7 +63,7 @@
 | `id`                     | 각 데이터 레코드의 고유 식별자 (자동 증가하는 정수형)                                           |
 
 ## DDL
-```
+```sql
 CREATE TABLE TemperatureData (
     id INT PRIMARY KEY AUTO_INCREMENT,     -- 아이디
     station_id INT NOT NULL,               -- 지점번호
@@ -101,7 +101,7 @@ CREATE TABLE TemperatureData (
 ## logstash.conf 파일 설정
 - jdbc driver 와 연동
 
-```
+```conf
 input {
   jdbc {
     jdbc_driver_library => "C:\02.devEnv\ELK\logstash-7.11.1\lib\mysql-connector-j-8.0.33.jar" # JDBC 드라이버 경로
@@ -138,12 +138,20 @@ output {
 ## 5. Practice course
 ### 5-1. 수집된 지역 별 기상 정보 데이터 합치기
 
-- 메모장에서 데이터를 하나의 파일로 합치고 인코딩 UTF-8로 바꿔서 저장
+- 메모장에서 데이터를 하나의 파일로 합치고, 파일이 기본 `ANSI` 로 설정되어 있어서 인코딩 `UTF-8`로 바꿔서 저장
 - CSV파일 DBeaver로 Import하기
 
 <img src="db.png" width="500"/>
 
 - PK로 설정할 수 있는 컬럼이 없어서 Auto Increment를 사용하는 id 컬럼을 추가하여 PK로 설정
+- 이미 데이터가 저장된 테이블에 Auto Increment Column을 추가하는 것이므로, 강제로 데이터 넣어서 저장
+
+```sql
+SET @row_num = 0;
+
+UPDATE weather_info
+SET id = (@row_num := @row_num + 1);
+```
 
 ### 5-2. Logstash에서 JDBC 연동
 
