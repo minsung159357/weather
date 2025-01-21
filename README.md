@@ -223,6 +223,16 @@ use_column_value = false 값으로 변경하여 해결.
 
 ![image](https://github.com/user-attachments/assets/4b0e9883-8b4d-49c9-8fd9-961c1842629c)
 
+# AUTO_INCREMENT 오류
+
+PRIMARY KEY 를 먼저 설정하지 않은채로 AUTO_INCREMENT 설정을 하여 오류발생.
+
+![image](https://github.com/user-attachments/assets/f8dd66ce-6098-4293-9ca6-4911d919a46e)
+
+PRIMARY KEY 를 먼저 설정하여 해결.
+
+![image](https://github.com/user-attachments/assets/d063cf08-02f5-41b2-a61d-42f2c2266656)
+
 ## 7. Review
 
 <details>
