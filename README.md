@@ -18,7 +18,7 @@
 
 💡 주제 : 기온 데이터를 바탕으로 제주도의 4개 지역의 날씨 분석
 
-💡 데이터 수집 : 기상청의 기온 데이터를 csv로 저장해, mysql에 저장하였다.
+💡 데이터 수집 : [기상청의 기온 데이터](https://data.kma.go.kr/climate/RankState/selectRankStatisticsDivisionList.do)를 csv로 저장해, mysql에 저장하였다.
 
 
 ## 3. Stack and Tools
@@ -45,7 +45,9 @@
 
 </aside>
 
+
 ## `weather_info` table
+
 
 | **컬럼명**                | **설명**                                                                                   |
 |-------------------------|--------------------------------------------------------------------------------------------|
@@ -59,6 +61,7 @@
 | `min_temp_time`          | 최저 기온이 발생한 시간 (문자열형, 예: "07:59")                                                |
 | `daily_temperature_range`| 해당 날짜의 일교차 (실수형, 최고 기온과 최저 기온의 차이, 섭씨 기준)                               |
 | `id`                     | 각 데이터 레코드의 고유 식별자 (자동 증가하는 정수형)                                           |
+
 
 ## 📌 DDL
 ```
@@ -116,7 +119,7 @@ VALUES
 #### logstash.conf 파일 설정
 - jdbc driver 와 연동
 
-```
+```conf
 input {
   jdbc {
     jdbc_driver_library => "C:\02.devEnv\ELK\logstash-7.11.1\lib\mysql-connector-j-8.0.33.jar" # JDBC 드라이버 경로
@@ -156,12 +159,20 @@ elasticsearch-head에서 정상 업로드 확인
 ## 5. Practice course
 ### 5-1. 수집된 지역 별 기상 정보 데이터 합치기
 
-- 메모장에서 데이터를 하나의 파일로 합치고 인코딩 UTF-8로 바꿔서 저장
+- 메모장에서 데이터를 하나의 파일로 합치고, 파일이 기본 `ANSI` 로 설정되어 있어서 인코딩 `UTF-8`로 바꿔서 저장
 - CSV파일 DBeaver로 Import하기
 
 <img src="db.png" width="500"/>
 
 - PK로 설정할 수 있는 컬럼이 없어서 Auto Increment를 사용하는 id 컬럼을 추가하여 PK로 설정
+- 이미 데이터가 저장된 테이블에 Auto Increment Column을 추가하는 것이므로, 강제로 데이터 넣어서 저장
+
+```sql
+SET @row_num = 0;
+
+UPDATE weather_info
+SET id = (@row_num := @row_num + 1);
+```
 
 ### 5-2. Logstash에서 JDBC 연동
 
@@ -203,7 +214,7 @@ logstash -f ..\config\weather_info.conf
 
 - 정상적으로 SELECT를 하는지, 1분을 주기로 다시 SEELCT 하는지 확인
 
-<img src="result.PNG" width="500"/>
+<img src="./img/result1.png" width="500"/>
 <img src="head1.png" width="500"/>
 <img src="head2.png" width="500"/>
 
@@ -212,7 +223,7 @@ logstash -f ..\config\weather_info.conf
 ### 5-4. 
 
 ## 6. Trouble Shooting
-# 파일명 오류
+### 파일명 오류
 logstash 와 jdbc 를 연동하는 설정파일(mysql-logstash.conf) 수정 중 파일명을 잘못 기재하여 오류발생.
 
 ![image](https://github.com/user-attachments/assets/42263ffd-a0ef-479f-aaa2-bb010e9a4a7f)
@@ -221,7 +232,7 @@ mysql-connector-java-8.0.32.jar --->mysql-connector-j-8.0.33.jar 수정완료.
 
 ![image](https://github.com/user-attachments/assets/81240646-edfb-455f-9b3a-c40e00418f77)
 
-# jdbc 연결 오류
+### jdbc 연결 오류
 
 ![image](https://github.com/user-attachments/assets/40a2c384-6f9b-4392-bef9-f4f5efdfff93)
 
@@ -233,35 +244,57 @@ use_column_value = false 값으로 변경하여 해결.
 
 ![image](https://github.com/user-attachments/assets/4b0e9883-8b4d-49c9-8fd9-961c1842629c)
 
+# AUTO_INCREMENT 오류
+
+PRIMARY KEY 를 먼저 설정하지 않은채로 AUTO_INCREMENT 설정을 하여 오류발생.
+
+![image](https://github.com/user-attachments/assets/f8dd66ce-6098-4293-9ca6-4911d919a46e)
+
+PRIMARY KEY 를 먼저 설정하여 해결.
+
+![image](https://github.com/user-attachments/assets/d063cf08-02f5-41b2-a61d-42f2c2266656)
+
 ## 7. Review
 
 <details>
 <summary>이슬기</summary>
 
-    [배운 점]
-    프로젝트를 통해 logstash의 conf 파일을 커스터마이징을 하는 방법을 배웠고, JDBC 드라이버와 연결하는 방법을 배웠다. 또한, Pipeline을 구축하며 실행되지 않는 다양한 문제에 직면하면서 logstash가 어떻게 동작하는지 배울 수 있었다.😄
+[배운 점]
+프로젝트를 통해 logstash의 conf 파일을 커스터마이징을 하는 방법을 배웠고, JDBC 드라이버와 연결하는 방법을 배웠다. 또한, Pipeline을 구축하며 실행되지 않는 다양한 문제에 직면하면서 logstash가 어떻게 동작하는지 배울 수 있었다.😄
 
-    [아쉬운 점]
-    mysql부터 Elasticsearch는 logstash를 사용해 데이터 전송을 자동화할 수 있었지만, mysql에 데이터를 적재하는 로직을 API 혹은 크롤링을 통해 자동화 프로그램을 만들 수 있었다면 더욱 좋았을 것 같다.
-    
-    [앞으로..]
-    프로세스를 더욱 최적화할 수 있는 부분은 없는지 고민하고, 실습을 진행해보아야겠다.
+[아쉬운 점]
+mysql부터 Elasticsearch는 logstash를 사용해 데이터 전송을 자동화할 수 있었지만, mysql에 데이터를 적재하는 로직을 API 혹은 크롤링을 통해 자동화 프로그램을 만들 수 있었다면 더욱 좋았을 것 같다.
 
+[앞으로..]
+프로세스를 더욱 최적화할 수 있는 부분은 없는지 고민하고, 실습을 진행해보아야겠다.
+</details>
+
+<details>
+<summary>한정현</summary>
+
+[배운 점]
+CSV파일만 읽어와서 정적인 데이터로만 logstash를 사용했었는데 이번 기회를 통해 jdbc 설정으로 DB에 연결하여 동적인 데이터를 다루는 법을 배우는 기회가 되어 좋았다. elastic search에 대해 좀 더 깊게 학습하게 된 것 같아서 유익한 시간이었다.
+
+[아쉬운 점]
+직접 DB에 insert를 하지 않고 API를 사용하여 실시간으로 바뀌고 추가되는 데이터들을 만들어보지 못해서 아쉬웠다.
+
+[앞으로..]
+jdbc의 여러 설정들에 대해 학습하고 실시간으로 바뀌는 데이터들을 사용해서 만들어보고 싶다.
 </details>
 
 <details>
 <summary>구민지</summary>
 
-    [배운 점]
-    MySQL과 Logstash를 JDBC 드라이버를 통해 연결하여 데이터 파이프라인을 구축하는 과정을 직접 경험함으로써, Logstash의 데이터 처리 흐름과 작동 원리를 보다 명확히 이해할 수 있었다.
-    데이터 수집, 변환, 저장의 전 과정을 설계하고 구현함으로써 Elastic Stack의 주요 구성 요소들에 대한 실질적인 활용법을 익혔다.
+[배운 점]
+MySQL과 Logstash를 JDBC 드라이버를 통해 연결하여 데이터 파이프라인을 구축하는 과정을 직접 경험함으로써, Logstash의 데이터 처리 흐름과 작동 원리를 보다 명확히 이해할 수 있었다.
+데이터 수집, 변환, 저장의 전 과정을 설계하고 구현함으로써 Elastic Stack의 주요 구성 요소들에 대한 실질적인 활용법을 익혔다.
 
-    [아쉬운 점]
-    연결 설정 과정에서 로컬 파일을 실수로 삭제하는 일이 발생했으며, 이로 인해 백업과 파일 관리의 중요성을 절실히 느꼈다. 
-    프로젝트 진행 중에는 항상 데이터 손실에 대비하는 습관을 길러야 함을 깨달았다.
+[아쉬운 점]
+연결 설정 과정에서 로컬 파일을 실수로 삭제하는 일이 발생했으며, 이로 인해 백업과 파일 관리의 중요성을 절실히 느꼈다. 
+프로젝트 진행 중에는 항상 데이터 손실에 대비하는 습관을 길러야 함을 깨달았다.
     
-    [앞으로..]
-    모든 작업 파일을 체계적으로 정리하고, Git 또는 클라우드 백업 서비스를 적극적으로 활용하여 데이터 손실을 방지해야겠다.
-    이번 프로젝트에서는 정적 데이터를 활용했으나, 다음 프로젝트에서는 실시간 스트리밍 데이터를 Logstash와 Elastic Stack으로 처리하는 방식을 시도해 보고 싶다.
+[앞으로..]
+모든 작업 파일을 체계적으로 정리하고, Git 또는 클라우드 백업 서비스를 적극적으로 활용하여 데이터 손실을 방지해야겠다.
+이번 프로젝트에서는 정적 데이터를 활용했으나, 다음 프로젝트에서는 실시간 스트리밍 데이터를 Logstash와 Elastic Stack으로 처리하는 방식을 시도해 보고 싶다.
 
 </details>
