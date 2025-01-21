@@ -199,7 +199,22 @@ logstash -f ..\config\weather_info.conf
 
 - DB에 3개의 값을 추가하고 1분 후 중복되지 않은 값인 id값이 추가됨을 logstash에서 인식하고 2702개였던 데이터가 2705개로 정상적으로 추가됨
 
-### 5-4. 
+### 5-4. Kibana 시각화
+
+
+- Kibana에서 Data Visualize
+
+|        |           |
+|-------------------|-------------------|
+| ![alt text](avg-temperature.png) | ![alt text](avg-t.png) |
+| 연 평균 기온             | 연 평균 일교차             |
+
+|        |           |
+|-------------------|-------------------|
+| ![alt text](max-min.png) | ![alt text](season-temp.png) |
+| 지역 별 최대/최소 기온            | 계절 별 최대/최소 기온             |
+
+
 
 ## 6. Trouble Shooting
 # 파일명 오류
