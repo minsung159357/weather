@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 # ☀️ Weather data using Elastic stack
+=======
+# weather data using Elastic stack, JDBC
+>>>>>>> Stashed changes
 
 
 ## 1. Team
@@ -250,17 +254,20 @@ mysql-connector-java-8.0.32.jar --->mysql-connector-j-8.0.33.jar 수정완료.
 
 ### jdbc 연결 오류
 
+![image](https://github.com/user-attachments/assets/b7d35e4a-637e-433a-a614-7ad2ee5c2df1)
+
+조건없이 전체 데이터를 조회하는 과정 중 `tracking_column` 값을 주석처리하여 오류 발생.
+
 ![image](https://github.com/user-attachments/assets/40a2c384-6f9b-4392-bef9-f4f5efdfff93)
 
-조건없이 전체 데이터를 조회하는 과정 중 tracking_column 값을 주석처리하여 오류 발생. 
 
-![image](https://github.com/user-attachments/assets/b7d35e4a-637e-433a-a614-7ad2ee5c2df1)
+✔ 이유 : `use_column_value` 값이 true 인 경우, logstash는 `tracking_column` 값을 기준으로 데이터를 수용하기 때문
 
 use_column_value = false 값으로 변경하여 해결.
 
-![image](https://github.com/user-attachments/assets/4b0e9883-8b4d-49c9-8fd9-961c1842629c)
+<img src="https://github.com/user-attachments/assets/4b0e9883-8b4d-49c9-8fd9-961c1842629c" width="300">
 
-# AUTO_INCREMENT 오류
+### AUTO_INCREMENT 오류
 
 PRIMARY KEY 를 먼저 설정하지 않은채로 AUTO_INCREMENT 설정을 하여 오류발생.
 
