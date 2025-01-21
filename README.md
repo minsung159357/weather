@@ -163,7 +163,7 @@ elasticsearch-head에서 정상 업로드 확인
 - 메모장에서 데이터를 하나의 파일로 합치고, 파일이 기본 `ANSI` 로 설정되어 있어서 인코딩 `UTF-8`로 바꿔서 저장
 - CSV파일 DBeaver로 Import하기
 
-<img src="db.png" width="500"/>
+<img src="./img/db.png" width="500"/>
 
 - PK로 설정할 수 있는 컬럼이 없어서 Auto Increment를 사용하는 id 컬럼을 추가하여 PK로 설정
 - 이미 데이터가 저장된 테이블에 Auto Increment Column을 추가하는 것이므로, 강제로 데이터 넣어서 저장
@@ -216,8 +216,8 @@ logstash -f ..\config\weather_info.conf
 - 정상적으로 SELECT를 하는지, 1분을 주기로 다시 SEELCT 하는지 확인
 
 <img src="./img/result1.png" width="500"/>
-<img src="head1.png" width="500"/>
-<img src="head2.png" width="500"/>
+<img src="./img/head1.png" width="500"/>
+<img src="./img/head2.png" width="500"/>
 
 - DB에 3개의 값을 추가하고 1분 후 중복되지 않은 값인 id값이 추가됨을 logstash에서 인식하고 2702개였던 데이터가 2705개로 정상적으로 추가됨
 
@@ -228,12 +228,12 @@ logstash -f ..\config\weather_info.conf
 
 |        |           |
 |-------------------|-------------------|
-| ![alt text](avg-temperature.png) | ![alt text](avg-t.png) |
+| ![alt text](./img/avg-temperature.png) | ![alt text](./img/avg-t.png) |
 | 연 평균 기온             | 연 평균 일교차             |
 
 |        |           |
 |-------------------|-------------------|
-| ![alt text](max-min.png) | ![alt text](season-temp.png) |
+| ![alt text](./img/max-min.png) | ![alt text](./img/season-temp.png) |
 | 지역 별 최대/최소 기온            | 계절 별 최대/최소 기온             |
 
 
