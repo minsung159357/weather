@@ -45,9 +45,9 @@
 
 </aside>
 
-> ### 📌 id INT PRIMARY KEY AUTO_INCREMENT,     -- 아이디
 
 ## `weather_info` table
+
 
 | **컬럼명**                | **설명**                                                                                   |
 |-------------------------|--------------------------------------------------------------------------------------------|
@@ -62,8 +62,9 @@
 | `daily_temperature_range`| 해당 날짜의 일교차 (실수형, 최고 기온과 최저 기온의 차이, 섭씨 기준)                               |
 | `id`                     | 각 데이터 레코드의 고유 식별자 (자동 증가하는 정수형)                                           |
 
-## DDL
-```sql
+
+## 📌 DDL
+```
 CREATE TABLE TemperatureData (
     id INT PRIMARY KEY AUTO_INCREMENT,     -- 아이디
     station_id INT NOT NULL,               -- 지점번호
@@ -78,15 +79,32 @@ CREATE TABLE TemperatureData (
     PRIMARY KEY (id)
 );
 ```
-
+## ✏️ DML
+```
+INSERT INTO weather_info (
+	station_id,
+	station_name,
+	record_time,
+	avg_temperature,
+	max_temperatue,
+	max_temp_time,
+	min_temperature,
+	min_temp_time,
+	daily_temperature_range
+)
+VALUES
+(189, '서귀포', '2024-01-26', 4.5, 7.3, '13:11', 2.6, '05:29', 4.7),
+(189, '서귀포', '2024-01-27', 8.0, 11.2, '14:22', 5.4, '10:01', 5.8),
+(189, '서귀포', '2024-01-28', 6.8, 9.5, '16:09', 4.1, '02:15', 5.4);
+```
 ---
 
-### 1. [dataSet]
+### 1. 📈 [dataSet]
 기상청 자료개방포털에서 **제주도** 기온 데이터를 가져와 데이터 정제 후 사용
 
-![image](https://github.com/user-attachments/assets/ea6825a1-9e71-439e-b963-584488d4a6e9)
-
-![image](https://github.com/user-attachments/assets/8c218960-b4ab-4337-9186-2fb27335a147)
+<img src = "https://github.com/user-attachments/assets/ea6825a1-9e71-439e-b963-584488d4a6e9" width = "500"/>
+</br>
+<img src = "https://github.com/user-attachments/assets/8c218960-b4ab-4337-9186-2fb27335a147" width = "500"/>
 
 
 
@@ -97,8 +115,8 @@ CREATE TABLE TemperatureData (
 [기상자료개방포털](https://data.kma.go.kr/cmmn/main.do)
 
 
-### 2. [logstash] weather_info.conf
-## logstash.conf 파일 설정
+### 2. 📄 [logstash] weather_info.conf
+#### logstash.conf 파일 설정
 - jdbc driver 와 연동
 
 ```conf
@@ -129,8 +147,12 @@ output {
 ```
 
 
-### 3. weather_info
-![image](https://github.com/user-attachments/assets/1c744053-ff82-49c6-b043-d3b8a49d5acc)
+### 3. 📁 weather_info
+elasticsearch-head에서 정상 업로드 확인
+
+<img src = "https://github.com/user-attachments/assets/1c744053-ff82-49c6-b043-d3b8a49d5acc" width = "500"/>
+</br>
+<img src = "https://github.com/user-attachments/assets/c4f4dce2-ac1a-463d-81f4-a0f495a026df" width = "500"/>
 
 
 ---
@@ -193,7 +215,7 @@ logstash -f ..\config\weather_info.conf
 
 - 정상적으로 SELECT를 하는지, 1분을 주기로 다시 SEELCT 하는지 확인
 
-<img src="result.PNG" width="500"/>
+<img src="./img/result1.png" width="500"/>
 <img src="head1.png" width="500"/>
 <img src="head2.png" width="500"/>
 
@@ -217,7 +239,7 @@ logstash -f ..\config\weather_info.conf
 
 
 ## 6. Trouble Shooting
-# 파일명 오류
+### 파일명 오류
 logstash 와 jdbc 를 연동하는 설정파일(mysql-logstash.conf) 수정 중 파일명을 잘못 기재하여 오류발생.
 
 ![image](https://github.com/user-attachments/assets/42263ffd-a0ef-479f-aaa2-bb010e9a4a7f)
@@ -226,7 +248,7 @@ mysql-connector-java-8.0.32.jar --->mysql-connector-j-8.0.33.jar 수정완료.
 
 ![image](https://github.com/user-attachments/assets/81240646-edfb-455f-9b3a-c40e00418f77)
 
-# jdbc 연결 오류
+### jdbc 연결 오류
 
 ![image](https://github.com/user-attachments/assets/40a2c384-6f9b-4392-bef9-f4f5efdfff93)
 
@@ -237,6 +259,16 @@ mysql-connector-java-8.0.32.jar --->mysql-connector-j-8.0.33.jar 수정완료.
 use_column_value = false 값으로 변경하여 해결.
 
 ![image](https://github.com/user-attachments/assets/4b0e9883-8b4d-49c9-8fd9-961c1842629c)
+
+# AUTO_INCREMENT 오류
+
+PRIMARY KEY 를 먼저 설정하지 않은채로 AUTO_INCREMENT 설정을 하여 오류발생.
+
+![image](https://github.com/user-attachments/assets/f8dd66ce-6098-4293-9ca6-4911d919a46e)
+
+PRIMARY KEY 를 먼저 설정하여 해결.
+
+![image](https://github.com/user-attachments/assets/d063cf08-02f5-41b2-a61d-42f2c2266656)
 
 ## 7. Review
 
@@ -264,4 +296,21 @@ CSV파일만 읽어와서 정적인 데이터로만 logstash를 사용했었는�
 
 [앞으로..]
 jdbc의 여러 설정들에 대해 학습하고 실시간으로 바뀌는 데이터들을 사용해서 만들어보고 싶다.
+</details>
+
+<details>
+<summary>구민지</summary>
+
+[배운 점]
+MySQL과 Logstash를 JDBC 드라이버를 통해 연결하여 데이터 파이프라인을 구축하는 과정을 직접 경험함으로써, Logstash의 데이터 처리 흐름과 작동 원리를 보다 명확히 이해할 수 있었다.
+데이터 수집, 변환, 저장의 전 과정을 설계하고 구현함으로써 Elastic Stack의 주요 구성 요소들에 대한 실질적인 활용법을 익혔다.
+
+[아쉬운 점]
+연결 설정 과정에서 로컬 파일을 실수로 삭제하는 일이 발생했으며, 이로 인해 백업과 파일 관리의 중요성을 절실히 느꼈다. 
+프로젝트 진행 중에는 항상 데이터 손실에 대비하는 습관을 길러야 함을 깨달았다.
+    
+[앞으로..]
+모든 작업 파일을 체계적으로 정리하고, Git 또는 클라우드 백업 서비스를 적극적으로 활용하여 데이터 손실을 방지해야겠다.
+이번 프로젝트에서는 정적 데이터를 활용했으나, 다음 프로젝트에서는 실시간 스트리밍 데이터를 Logstash와 Elastic Stack으로 처리하는 방식을 시도해 보고 싶다.
+
 </details>
