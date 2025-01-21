@@ -7,7 +7,7 @@
 4. [Database](#4-database)
    - [weather_info table](#weather_info-table)
    - [DDL](#-ddl)
-   - [DML](#-dml)
+   - [DML](#%EF%B8%8F-dml)
 5. [Hands On](#5-hands-on)
    - [5-1. 수집된 지역 별 기상 정보 데이터 합치기](#5-1-수집된-지역-별-기상-정보-데이터-합치기)
    - [5-2. Logstash에서 JDBC 연동](#5-2-logstash에서-jdbc-연동)
@@ -246,8 +246,8 @@ logstash -f ..\config\weather_info.conf
 
 |        |           |
 |-------------------|-------------------|
-| ![alt text](./img/avg-temperature.png) | ![alt text](./img/avg-t.png) |
-| 연 평균 기온             | 연 평균 일교차             |
+| ![image](https://github.com/user-attachments/assets/adcb1e4b-a61d-438f-a3df-30ba475184c3) | ![image](https://github.com/user-attachments/assets/7329cc6c-9134-41e0-a01a-8393c0d7f073) | 
+| 월 평균 기온             | 연 평균 일교차             |
 
 |        |           |
 |-------------------|-------------------|
