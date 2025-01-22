@@ -12,8 +12,8 @@
    - [5-1. 수집된 지역 별 기상 정보 데이터 합치기](#5-1-수집된-지역-별-기상-정보-데이터-합치기)
    - [5-2. Logstash에서 JDBC 연동](#5-2-logstash에서-jdbc-연동)
    - [5-3. logstash 실행](#5-3-logstash-실행)
-   - [5-4. Kibana 시각화](#5-4-kibana-시각화)
-   - [5-5. Crontab을 사용해서 자동으로 insert](#5-5-Crontab-사용)
+   - [5-4. Crontab을 사용해서 자동으로 insert](#5-5-Crontab-사용)
+   - [5-5. Kibana 시각화](#5-4-kibana-시각화)
 
 6. [Trouble Shooting](#6-trouble-shooting)
 7. [Review](#7-review)
@@ -264,7 +264,18 @@ logstash -f ..\config\weather_info.conf
 
 - DB에 3개의 값을 추가하고 1분 후 중복되지 않은 값인 id값이 추가됨을 logstash에서 인식하고 2702개였던 데이터가 2705개로 정상적으로 추가됨
 
-### 5-4. Kibana 시각화
+### 5-4. Crontab을 사용해서 자동으로 insert
+- DBMS에서 직접 insert하지 않고 SQL script를 1분마다 실행하도록 crontab 설정
+- 1분마다 SQL script를 한줄씩 읽어서 실행
+
+![alt text](./img/log.png)
+
+
+- 정상적으로 DB에 insert된 것 확인
+
+![alt text](./img/newDB.png)
+
+### 5-5. Kibana 시각화
 
 
 - Kibana에서 Data Visualize
@@ -280,16 +291,6 @@ logstash -f ..\config\weather_info.conf
 | ![alt text](./img/max-min.png) | ![image](https://github.com/user-attachments/assets/12de4f14-bfe5-41b6-81b6-7f78b0e8466f)|
 | 지역 별 최대/최소 기온            | 계절 별 최대/최소 기온             |
 
-### 5-5. Crontab을 사용해서 자동으로 insert
-- DBMS에서 직접 insert하지 않고 SQL script를 1분마다 실행하도록 crontab 설정
-- 1분마다 SQL script를 한줄씩 읽어서 실행
-
-![alt text](./img/log.png)
-
-
-- 정상적으로 DB에 insert된 것 확인
-
-![alt text](./img/newDB.png)
 
 ## 6. Trouble Shooting
 ### 1️⃣ 파일명 오류
