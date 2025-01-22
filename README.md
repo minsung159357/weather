@@ -264,8 +264,8 @@ logstash -f ..\config\weather_info.conf
 
 - DB에 3개의 값을 추가하고 1분 후 중복되지 않은 값인 id값이 추가됨을 logstash에서 인식하고 2702개였던 데이터가 2705개로 정상적으로 추가됨
 
-### 5-4. Crontab을 사용해서 자동으로 insert
-- DBMS에서 직접 insert하지 않고 SQL script를 1분마다 실행하도록 crontab 설정
+### 5-4. Crontab을 사용해서 insert 자동화
+- DBMS에서 직접 insert 하지 않고 준비된 SQL script를 1분마다 실행하도록 crontab 설정
 - 1분마다 SQL script를 한줄씩 읽어서 실행
 
 ![alt text](./img/log.png)
