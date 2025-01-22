@@ -7,7 +7,7 @@
 4. [Database](#4-database)
    - [weather_info table](#weather_info-table)
    - [DDL](#-ddl)
-   - [DML](#-dml)
+   - [DML](#%EF%B8%8F-dml)
 5. [Hands On](#5-hands-on)
    - [5-1. 수집된 지역 별 기상 정보 데이터 합치기](#5-1-수집된-지역-별-기상-정보-데이터-합치기)
    - [5-2. Logstash에서 JDBC 연동](#5-2-logstash에서-jdbc-연동)
@@ -38,14 +38,15 @@
 
 ## 3. Stack and Tools
 
+<img src="./img/image-pipeline.png" width = "600"/>
+
 | 기술           | 설명                         |
 |----------------|------------------------------|
-| <img src="https://img.shields.io/badge/elasticsearch-005571?style=for-the-badge&logo=elasticsearch&logoColor=white">    | 데이터 검색 및 분석 엔진      |
-| <img src="https://img.shields.io/badge/logstash-005571?style=for-the-badge&logo=logstash&logoColor=white">      | 데이터 수집 및 처리 도구      |
 | <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white">   | 관계형 데이터베이스 관리 시스템 |
 | <img src="https://img.shields.io/badge/jdbc-000000?style=for-the-badge&logo=openjdk&logoColor=white">          | Java 데이터베이스 연결 API     |
+| <img src="https://img.shields.io/badge/logstash-005571?style=for-the-badge&logo=logstash&logoColor=white">      | 데이터 수집 및 처리 도구      |
+| <img src="https://img.shields.io/badge/elasticsearch-005571?style=for-the-badge&logo=elasticsearch&logoColor=white">    | 데이터 검색 및 분석 엔진      |
 | <img src="https://img.shields.io/badge/kibana-005571?style=for-the-badge&logo=kibana&logoColor=white">        | 데이터 시각화 및 대시보드 도구 |
-
 
 
 ## 4. Database
@@ -56,7 +57,7 @@
 
     1. [dataSet] weather_info.csv
     2. [logstash] mysql-logstash.conf
-    3. mysql-connector-j-8.0.33.jar
+    3. wheather_mysql.sql
 
 </aside>
 
@@ -79,7 +80,10 @@
 
 
 ## 📌 DDL
-```
+
+CSV 데이터 파일 형식에 맞추어 날씨 데이터 DDL문을 작성
+
+```sql
 CREATE TABLE TemperatureData (
     id INT PRIMARY KEY AUTO_INCREMENT,     -- 아이디
     station_id INT NOT NULL,               -- 지점번호
@@ -95,7 +99,10 @@ CREATE TABLE TemperatureData (
 );
 ```
 ## ✏️ DML
-```
+
+프로그램의 자동화를 테스트하기 위해 추가적인 더미데이터를 DML문으로 생성
+
+```sql
 INSERT INTO weather_info (
 	station_id,
 	station_name,
@@ -115,15 +122,11 @@ VALUES
 ---
 
 ### 1. 📈 [dataSet]
+
 기상청 자료개방포털에서 **제주도** 기온 데이터를 가져와 데이터 정제 후 사용
 
 <img src = "https://github.com/user-attachments/assets/ea6825a1-9e71-439e-b963-584488d4a6e9" width = "500"/>
 </br>
-<img src = "https://github.com/user-attachments/assets/8c218960-b4ab-4337-9186-2fb27335a147" width = "300"/>
-
-
-
-
 
 출처 : 기상청
 
@@ -134,22 +137,51 @@ VALUES
 #### logstash.conf 파일 설정
 - jdbc driver 와 연동
 
-```conf
-input {
+```input {
   jdbc {
     jdbc_driver_library => "C:\02.devEnv\ELK\logstash-7.11.1\lib\mysql-connector-j-8.0.33.jar" # JDBC 드라이버 경로
     jdbc_driver_class => "com.mysql.cj.jdbc.Driver" # MySQL JDBC 드라이버 클래스
     jdbc_connection_string => "jdbc:mysql://192.168.1.10:3306/fisa" # MySQL 연결 문자열
     jdbc_user => "user01" # MySQL 사용자
     jdbc_password => "user01" # MySQL 비밀번호
-    statement => "SELECT * FROM weather_info WHERE id > :sql_last_value" # 실행할 SQL 쿼리
-    use_column_value => true
-    tracking_column => "id" # 쿼리에서 변경된 데이터 추적
-    tracking_column_type => "numeric"
-    last_run_metadata_path => "C:\00.dataSet\03.9997\.logstash_jdbc_last_run" # 마지막 실행 시간 저장 경로
-    schedule => "* * * * *" # 매 분 실행
+    statement => "SELECT * FROM weather_info" # 실행할 SQL 쿼리
+    use_column_value => false
+    # tracking_column => "id" # 쿼리에서 변경된 데이터 추적
+    # tracking_column_type => "numeric"
+    last_run_metadata_path => "C:\00.dataSet\.logstash_jdbc_last_run" # 마지막 실행 시간 저장 경로
+    # schedule => "* * * * *" # 매 분 실행
   }
 }
+
+
+filter { # ES내에서 season 속성 추가
+  ruby {
+    code => "
+      require 'date'
+      date_str = event.get('record_time')
+      if date_str && !date_str.empty?
+        date = Date.parse(date_str)
+        month = date.month
+        case month
+        when 12, 1, 2
+          event.set('season', 'winter')
+        when 3, 4, 5
+          event.set('season', 'spring')
+        when 6, 7, 8
+          event.set('season', 'summer')
+        when 9, 10, 11
+          event.set('season', 'autumn')
+        end
+      end
+    "
+  }
+
+  mutate{
+    remove_field => ["@version"]
+  }
+}
+
+
 
 output {
   elasticsearch {
@@ -165,8 +197,6 @@ output {
 ### 3. 📁 weather_info
 elasticsearch-head에서 정상 업로드 확인
 
-
----
 
 ## 5. Hands On
 ### 5-1. 수집된 지역 별 기상 정보 데이터 합치기
@@ -239,12 +269,13 @@ logstash -f ..\config\weather_info.conf
 
 |        |           |
 |-------------------|-------------------|
-| ![alt text](./img/avg-temperature.png) | ![alt text](./img/avg-t.png) |
-| 연 평균 기온             | 연 평균 일교차             |
+| ![image](https://github.com/user-attachments/assets/adcb1e4b-a61d-438f-a3df-30ba475184c3) | ![image](https://github.com/user-attachments/assets/7329cc6c-9134-41e0-a01a-8393c0d7f073) | 
+| 월 평균 기온             | 연 평균 일교차             |
+
 
 |        |           |
 |-------------------|-------------------|
-| ![alt text](./img/max-min.png) | ![alt text](./img/season-temp.png) |
+| ![alt text](./img/max-min.png) | ![image](https://github.com/user-attachments/assets/12de4f14-bfe5-41b6-81b6-7f78b0e8466f)|
 | 지역 별 최대/최소 기온            | 계절 별 최대/최소 기온             |
 
 ### 5-4. Crontab을 사용해서 자동으로 insert
@@ -259,7 +290,7 @@ logstash -f ..\config\weather_info.conf
 ![alt text](./img/newDB.png)
 
 ## 6. Trouble Shooting
-### 파일명 오류
+### 1️⃣ 파일명 오류
 logstash 와 jdbc 를 연동하는 설정파일(mysql-logstash.conf) 수정 중 파일명을 잘못 기재하여 오류발생.
 
 ![image](https://github.com/user-attachments/assets/42263ffd-a0ef-479f-aaa2-bb010e9a4a7f)
@@ -268,7 +299,7 @@ mysql-connector-java-8.0.32.jar --->mysql-connector-j-8.0.33.jar 수정완료.
 
 ![image](https://github.com/user-attachments/assets/81240646-edfb-455f-9b3a-c40e00418f77)
 
-### jdbc 연결 오류
+### 2️⃣ jdbc 연결 오류
 
 ![image](https://github.com/user-attachments/assets/b7d35e4a-637e-433a-a614-7ad2ee5c2df1)
 
@@ -283,15 +314,21 @@ use_column_value = false 값으로 변경하여 해결.
 
 <img src="https://github.com/user-attachments/assets/4b0e9883-8b4d-49c9-8fd9-961c1842629c" width="300">
 
-### AUTO_INCREMENT 오류
+### 3️⃣ AUTO_INCREMENT 오류
 
 PRIMARY KEY 를 먼저 설정하지 않은채로 AUTO_INCREMENT 설정을 하여 오류발생.
 
-![image](https://github.com/user-attachments/assets/f8dd66ce-6098-4293-9ca6-4911d919a46e)
+| 에러 |
+|--------|
+| <img src="https://github.com/user-attachments/assets/f8dd66ce-6098-4293-9ca6-4911d919a46e" width="400"> |
+
+| 해결 과정 |
+|--------|
+| <img src="https://github.com/user-attachments/assets/d063cf08-02f5-41b2-a61d-42f2c2266656" width="400"> |
+
 
 PRIMARY KEY 를 먼저 설정하여 해결.
 
-![image](https://github.com/user-attachments/assets/d063cf08-02f5-41b2-a61d-42f2c2266656)
 
 ## 7. Review
 
@@ -334,7 +371,7 @@ MySQL과 Logstash를 JDBC 드라이버를 통해 연결하여 데이터 파이�
     
 [앞으로..]
 모든 작업 파일을 체계적으로 정리하고, Git 또는 클라우드 백업 서비스를 적극적으로 활용하여 데이터 손실을 방지해야겠다.
-이번 프로젝트에서는 정적 데이터를 활용했으나, 다음 프로젝트에서는 실시간 스트리밍 데이터를 Logstash와 Elastic Stack으로 처리하는 방식을 시도해 보고 싶다.
+이번 프로젝트에서는 정적 데이터를 활용했지만, 다음 프로젝트에서는 실시간 스트리밍 데이터를 Logstash와 Elastic Stack으로 처리하는 방식을 시도해 보고 싶다.
 
 </details>
 
