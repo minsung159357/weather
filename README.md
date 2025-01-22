@@ -7,7 +7,7 @@
 4. [Database](#4-database)
    - [weather_info table](#weather_info-table)
    - [DDL](#-ddl)
-   - [DML](#-dml)
+   - [DML](#%EF%B8%8F-dml)
 5. [Hands On](#5-hands-on)
    - [5-1. 수집된 지역 별 기상 정보 데이터 합치기](#5-1-수집된-지역-별-기상-정보-데이터-합치기)
    - [5-2. Logstash에서 JDBC 연동](#5-2-logstash에서-jdbc-연동)
@@ -127,9 +127,6 @@ VALUES
 
 <img src = "https://github.com/user-attachments/assets/ea6825a1-9e71-439e-b963-584488d4a6e9" width = "500"/>
 </br>
-<img src = "https://github.com/user-attachments/assets/8c218960-b4ab-4337-9186-2fb27335a147" width = "300"/>
-
-
 
 출처 : 기상청
 
@@ -140,22 +137,51 @@ VALUES
 #### logstash.conf 파일 설정
 - jdbc driver 와 연동
 
-```conf
-input {
+```input {
   jdbc {
     jdbc_driver_library => "C:\02.devEnv\ELK\logstash-7.11.1\lib\mysql-connector-j-8.0.33.jar" # JDBC 드라이버 경로
     jdbc_driver_class => "com.mysql.cj.jdbc.Driver" # MySQL JDBC 드라이버 클래스
     jdbc_connection_string => "jdbc:mysql://192.168.1.10:3306/fisa" # MySQL 연결 문자열
     jdbc_user => "user01" # MySQL 사용자
     jdbc_password => "user01" # MySQL 비밀번호
-    statement => "SELECT * FROM weather_info WHERE id > :sql_last_value" # 실행할 SQL 쿼리
-    use_column_value => true
-    tracking_column => "id" # 쿼리에서 변경된 데이터 추적
-    tracking_column_type => "numeric"
-    last_run_metadata_path => "C:\00.dataSet\03.9997\.logstash_jdbc_last_run" # 마지막 실행 시간 저장 경로
-    schedule => "* * * * *" # 매 분 실행
+    statement => "SELECT * FROM weather_info" # 실행할 SQL 쿼리
+    use_column_value => false
+    # tracking_column => "id" # 쿼리에서 변경된 데이터 추적
+    # tracking_column_type => "numeric"
+    last_run_metadata_path => "C:\00.dataSet\.logstash_jdbc_last_run" # 마지막 실행 시간 저장 경로
+    # schedule => "* * * * *" # 매 분 실행
   }
 }
+
+
+filter { # ES내에서 season 속성 추가
+  ruby {
+    code => "
+      require 'date'
+      date_str = event.get('record_time')
+      if date_str && !date_str.empty?
+        date = Date.parse(date_str)
+        month = date.month
+        case month
+        when 12, 1, 2
+          event.set('season', 'winter')
+        when 3, 4, 5
+          event.set('season', 'spring')
+        when 6, 7, 8
+          event.set('season', 'summer')
+        when 9, 10, 11
+          event.set('season', 'autumn')
+        end
+      end
+    "
+  }
+
+  mutate{
+    remove_field => ["@version"]
+  }
+}
+
+
 
 output {
   elasticsearch {
@@ -249,7 +275,7 @@ logstash -f ..\config\weather_info.conf
 
 |        |           |
 |-------------------|-------------------|
-| ![alt text](./img/max-min.png) | ![alt text](./img/season-temp.png) |
+| ![alt text](./img/max-min.png) | ![image](https://github.com/user-attachments/assets/12de4f14-bfe5-41b6-81b6-7f78b0e8466f)|
 | 지역 별 최대/최소 기온            | 계절 별 최대/최소 기온             |
 
 
@@ -336,7 +362,7 @@ MySQL과 Logstash를 JDBC 드라이버를 통해 연결하여 데이터 파이�
     
 [앞으로..]
 모든 작업 파일을 체계적으로 정리하고, Git 또는 클라우드 백업 서비스를 적극적으로 활용하여 데이터 손실을 방지해야겠다.
-이번 프로젝트에서는 정적 데이터를 활용했으나, 다음 프로젝트에서는 실시간 스트리밍 데이터를 Logstash와 Elastic Stack으로 처리하는 방식을 시도해 보고 싶다.
+이번 프로젝트에서는 정적 데이터를 활용했지만, 다음 프로젝트에서는 실시간 스트리밍 데이터를 Logstash와 Elastic Stack으로 처리하는 방식을 시도해 보고 싶다.
 
 </details>
 
