@@ -13,6 +13,8 @@
    - [5-2. Logstash에서 JDBC 연동](#5-2-logstash에서-jdbc-연동)
    - [5-3. logstash 실행](#5-3-logstash-실행)
    - [5-4. Kibana 시각화](#5-4-kibana-시각화)
+   - [5-5. Crontab을 사용해서 자동으로 insert](#5-5-Crontab-사용)
+
 6. [Trouble Shooting](#6-trouble-shooting)
 7. [Review](#7-review)
 
@@ -278,7 +280,7 @@ logstash -f ..\config\weather_info.conf
 | ![alt text](./img/max-min.png) | ![image](https://github.com/user-attachments/assets/12de4f14-bfe5-41b6-81b6-7f78b0e8466f)|
 | 지역 별 최대/최소 기온            | 계절 별 최대/최소 기온             |
 
-### 5-4. Crontab을 사용해서 자동으로 insert
+### 5-5. Crontab을 사용해서 자동으로 insert
 - DBMS에서 직접 insert하지 않고 SQL script를 1분마다 실행하도록 crontab 설정
 - 1분마다 SQL script를 한줄씩 읽어서 실행
 
