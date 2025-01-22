@@ -247,7 +247,16 @@ logstash -f ..\config\weather_info.conf
 | ![alt text](./img/max-min.png) | ![alt text](./img/season-temp.png) |
 | 지역 별 최대/최소 기온            | 계절 별 최대/최소 기온             |
 
+### 5-4. Crontab을 사용해서 자동으로 insert
+- DBMS에서 직접 insert하지 않고 SQL script를 1분마다 실행하도록 crontab 설정
+- 1분마다 SQL script를 한줄씩 읽어서 실행
 
+![alt text](./img/log.png)
+
+
+- 정상적으로 DB에 insert된 것 확인
+
+![alt text](./img/newDB.png)
 
 ## 6. Trouble Shooting
 ### 파일명 오류
