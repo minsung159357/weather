@@ -256,7 +256,7 @@ output {
 logstash -f ..\config\weather_info.conf
 ```
 
-- 정상적으로 SELECT를 하는지, 1분을 주기로 다시 SEELCT 하는지 확인
+- 정상적으로 SELECT를 하는지, 1분을 주기로 다시 SELECT 하는지 확인
 
 <img src="./img/result1.png" width="500"/>
 <img src="./img/head1.png" width="500"/>
